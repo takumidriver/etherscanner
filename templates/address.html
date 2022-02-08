@@ -1,7 +1,19 @@
 {% extends "layout.html" %}
 
 {% block content %}
-
-address {{addr}}
+<div class="container">
+  <table class="table">
+    <tr>
+      <td>
+        <h5>address</h5>
+        <p>{{addr}}</p>
+      </td>
+      <td>
+        <h5>balance</h5>
+        <p>{{ ether_balance }} ETH</p>
+      </td>
+    </tr>
+  </table>
+</div>
 
 {% endblock %}

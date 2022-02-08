@@ -1,6 +1,47 @@
 {% extends "layout.html" %}
 
 {% block content %}
-Current Price: {{result}}
+<h6>ETH price: ${{result}}<h6>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="p-5">
+        <h4>latest blocks</h4>
+        <table class="table table-sm table-striped">
+          {% for block in latest_blocks %}
+          <tr>
+              <td>
+                <h5>block</h5>
+                <a href="/block/{{ block.number }}">{{ block.number }}</a>
+                <p>{{ (current_time - block.timestamp) |int}} seconds ago</p>
+              </td>
+              <td>
+                <h5>miner</h5>
+                <a href="/address/{{ block.miner }}">{{ block.miner }}</a>
+                <p>{{ block.transactions |length}} txs</p>
+              </td>
+              <td>
+                <p>gas used: {{ block.gasUsed | numberFormat }}</p>
+              </td>
+          </tr>
+          {% endfor %}
+        </table>
+    </div>
+    <div class="p-5">
+        <h4>latest transactions</h4>
+        <table class="table table-sm table-striped">
+          {% for tx in latest_transactions %}
+          <tr>
+            <td>
+              <p>transaction: <a href="/tx/{{ tx.hash.hex() }}">{{tx.hash.hex()}}</a></p>
+              <p>from: <a href="/tx/{{ tx.from }}">{{tx.from}}</a></p>
+              <p>to: <a href="/tx/{{ tx.to }}">{{tx.to}}</a></p>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+    </div>
+  </div>
+</div>
 
 {% endblock %}
