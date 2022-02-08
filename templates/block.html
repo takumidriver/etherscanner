@@ -1,1 +1,29 @@
-block {{block_number}}
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+<div class="container">
+  <table class="table">
+    <tr>
+      <td>
+        <h5>block</h5>
+        <p>{{ block.number | numberFormat }}</p>
+      </td>
+      <td>
+        <h5>time</h5>
+        <p>{{ block.timestamp | numberFormat }}</p>
+      </td>
+      <td>
+        <h5>size</h5>
+        <p>{{ block.size | numberFormat }}</p>
+      </td>
+      <td>
+        <h5>mined by</h5>
+        <a href="/address/{{block.miner}}">{{block.miner}}</a>
+      </td>
+    </tr>
+  </table>
+</div>
+
+{% endblock %}

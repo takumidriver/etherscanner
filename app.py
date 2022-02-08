@@ -13,12 +13,12 @@ w3 = Web3(Web3.HTTPProvider(config.INFURA_URL))
 def index():
     result = requests.get(config.url, headers=config.headers, params=config.payload).json()
     latest_blocks = []
-    for block_number in range(w3.eth.block_number, w3.eth.block_number-5, -1):
+    for block_number in range(w3.eth.block_number, w3.eth.block_number-10, -1):
         block = w3.eth.get_block(block_number)
         latest_blocks.append(block)
 
     latest_transactions = []
-    for tx in latest_blocks[-1]['transactions'][-5:]:
+    for tx in latest_blocks[-1]['transactions'][-10:]:
         transaction = w3.eth.get_transaction(tx)
         latest_transactions.append(transaction)
     current_time = time.time()
@@ -31,15 +31,19 @@ def index():
 def address(addr):
     balance = w3.eth.get_balance(addr)
     ether_balance = w3.fromWei(balance, 'ether')
-    return render_template("address.html", addr=addr, ether_balance=ether_balance)
+    current_price = requests.get(config.url, headers=config.headers, params=config.payload).json()
+    current_value = "${:,.2f}".format(current_price['USD'] * float(ether_balance))
+    return render_template("address.html", addr=addr, ether_balance=ether_balance, current_value=current_value)
 
 @app.route("/block/<block_number>")
 def block(block_number):
-    return render_template("block.html", block_number=block_number)
+    block = w3.eth.get_block(int(block_number))
+    return render_template("block.html", block=block)
 
 @app.route("/tx/<hash>")
 def transaction(hash):
     transaction = w3.eth.get_transaction(hash)
+
     return render_template("transaction.html", hash=hash, transaction=transaction)
 
 @app.template_filter()

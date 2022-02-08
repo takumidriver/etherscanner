@@ -1,19 +1,23 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<h6>ETH price: ${{result}}<h6>
+
+<div class="container-fluid">
+  <h6>ETH price: ${{result}}<h6>
+</div>
+
 
 <div class="container-fluid">
   <div class="row">
     <div class="p-5">
-        <h4>latest blocks</h4>
+        <h4>latest blocks <i class="bi bi-activity"></i></h4>
         <table class="table table-sm table-striped">
           {% for block in latest_blocks %}
           <tr>
               <td>
                 <h5>block</h5>
                 <a href="/block/{{ block.number }}">{{ block.number }}</a>
-                <p>{{ (current_time - block.timestamp) |int}} seconds ago</p>
+                <p>{{ (current_time - block.timestamp) |int}} seconds ago <i class="bi bi-clock"></i></p>
               </td>
               <td>
                 <h5>miner</h5>
