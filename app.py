@@ -43,8 +43,13 @@ def block(block_number):
 @app.route("/tx/<hash>")
 def transaction(hash):
     transaction = w3.eth.get_transaction(hash)
-
-    return render_template("transaction.html", hash=hash, transaction=transaction)
+    amount = w3.fromWei(transaction.value, 'ether')
+    current_price = requests.get(config.url, headers=config.headers, params=config.payload).json()
+    current_value = (current_price['USD'] * float(amount))
+    return render_template("transaction.html", amount=amount,
+        hash=hash,
+        transaction=transaction,
+        current_value=current_value)
 
 @app.template_filter()
 def numberFormat(value):

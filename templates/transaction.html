@@ -2,25 +2,27 @@
 
 {% block content %}
 
-<div class="container">
+<div class="container pt-5">
   <h5>transaction</h5>
-  <table class="table table-striped">
+  <table class="table border-top border-3">
     <tr>
       <td>from:</td>
       <td><a href="/address/{{transaction.from}}">{{transaction.from}}</a></td>
-      </tr>
-      <tr>
-        <td>to: </td>
-        <td><a href="/address/{{transaction.to}}">{{transaction.to}}</a></td>
-      </tr>
-      <tr>
-        <td>gas: </td>
-        <td>{{transaction.gas | numberFormat}}</td>
-      </tr>
-      <tr>
-        <td>gas price: </td>
-        <td>{{transaction.gasPrice | numberFormat}}</td>
-      </tr>
+      <td>to: </td>
+      <td><a href="/address/{{transaction.to}}">{{transaction.to}}</a></td>
+    </tr>
+    <tr>
+      <td>amount: </td>
+      <td>{{amount}}</td>
+      <td>usd value: </td>
+      <td>${{current_value | numberFormat}}</td>
+    </tr>
+    <tr>
+      <td>gas: </td>
+      <td>{{transaction.gas | numberFormat}}</td>
+      <td>gas price: </td>
+      <td>{{transaction.gasPrice | numberFormat}}</td>
+    </tr>
   </table>
 </div>
 

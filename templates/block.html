@@ -3,24 +3,39 @@
 {% block content %}
 
 
-<div class="container">
+<div class="container pt-5">
   <table class="table">
     <tr>
-      <td>
-        <h5>block</h5>
-        <p>{{ block.number | numberFormat }}</p>
-      </td>
+      <thead>
+        <h5>block {{ block.number | numberFormat }}</h5>
+      </thead>
+    </tr>
+    <tr>
       <td>
         <h5>time</h5>
         <p>{{ block.timestamp | numberFormat }}</p>
       </td>
       <td>
-        <h5>size</h5>
-        <p>{{ block.size | numberFormat }}</p>
+        <h5>gas limit</h5>
+        <p>{{ block.gasLimit | numberFormat }}</p>
       </td>
+      <td>
+        <h5>gas used</h5>
+        <p>{{ block.gasUsed | numberFormat }}</p>
+      </td>
+    </tr>
+    <tr>
       <td>
         <h5>mined by</h5>
         <a href="/address/{{block.miner}}">{{block.miner}}</a>
+      </td>
+      <td>
+        <h5>difficulty</h5>
+        <p>{{ block.difficulty | numberFormat }}</p>
+      </td>
+      <td>
+        <h5>total difficulty</h5>
+        <p>{{ block.totalDifficulty | numberFormat }}</p>
       </td>
     </tr>
   </table>

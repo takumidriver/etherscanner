@@ -2,16 +2,19 @@
 
 {% block content %}
 
-<div class="container-fluid">
-  <h6>ETH price: ${{result}}<h6>
-</div>
+
 
 
 <div class="container-fluid">
+  <div class="pt-3">
+    <div class="text-center">
+      <h5> ETH price: ${{result}}<h5>
+    </div>
+  </div>
   <div class="row">
     <div class="p-5">
         <h4>latest blocks <i class="bi bi-activity"></i></h4>
-        <table class="table table-sm table-striped">
+        <table class="table table-sm table-striped border-top border-bottom border-3">
           {% for block in latest_blocks %}
           <tr>
               <td>
@@ -33,7 +36,7 @@
     </div>
     <div class="p-5">
         <h4>latest transactions</h4>
-        <table class="table table-sm table-striped">
+        <table class="table table-sm table-striped border-top border-bottom border-3">
           {% for tx in latest_transactions %}
           <tr>
             <td>

@@ -1,16 +1,19 @@
 {% extends "layout.html" %}
 
 {% block content %}
-<div class="container">
-  <table class="table">
+<div class="container pt-5">
+  <table class="table border-top border-3">
     <tr>
-      <td>
-        <h5>address</h5>
-        <p>{{addr}}</p>
-      </td>
+      <thead>
+          <h5>address {{addr}}</h5>
+      </thead>
+    </tr>
+    <tr>
       <td>
         <h5>balance</h5>
         <p>{{ ether_balance }} ETH</p>
+      </td>
+      <td>
         <h5>current USD value</h5>
         <p>{{ current_value }}</p>
       </td>
