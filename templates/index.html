@@ -5,14 +5,14 @@
 
 
 
-<div class="container-fluid">
+<div class="container">
   <div class="pt-3">
     <div class="text-center">
       <h5> ETH price: ${{result}}<h5>
     </div>
   </div>
   <div class="row">
-    <div class="p-5">
+    <div class="pt-5 mt-3 card">
         <h4>latest blocks <i class="bi bi-activity"></i></h4>
         <table class="table table-sm table-striped border-top border-bottom border-3">
           {% for block in latest_blocks %}
@@ -34,13 +34,16 @@
           {% endfor %}
         </table>
     </div>
-    <div class="p-5">
+    <div class="pt-5 mt-3 card">
         <h4>latest transactions</h4>
         <table class="table table-sm table-striped border-top border-bottom border-3">
           {% for tx in latest_transactions %}
           <tr>
             <td>
-              <p>transaction: <a href="/tx/{{ tx.hash.hex() }}">{{tx.hash.hex()}}</a></p>
+              <p>transaction:</p>
+              <p><a href="/tx/{{ tx.hash.hex() }}">{{tx.hash.hex()}}</a></p>
+            </td>
+            <td>
               <p>from: <a href="/tx/{{ tx.from }}">{{tx.from}}</a></p>
               <p>to: <a href="/tx/{{ tx.to }}">{{tx.to}}</a></p>
             </td>
