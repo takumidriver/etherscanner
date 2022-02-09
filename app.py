@@ -8,7 +8,6 @@ w3 = Web3(Web3.HTTPProvider(config.INFURA_URL))
 
 data = redis.Redis(host='127.0.0.1', port=6379, db=0)
 
-
 @app.route("/")
 def index():
     current_eth_price = data.get('current_eth_price')
@@ -17,19 +16,20 @@ def index():
         current_eth_price = requests.get(config.url, headers=config.headers, params=config.payload).json()
         data.set('current_eth_price', Web3.toJSON(current_eth_price['USD']), ex=20)
 
-
+    new_blocks = data.get('latest_blocks')
 
     latest_blocks = []
     for block_number in range(w3.eth.block_number, w3.eth.block_number-10, -1):
         block = w3.eth.get_block(block_number)
         latest_blocks.append(block)
-        data.set(block_number, Web3.toJSON(latest_blocks))
+    data.set('latest_blocks', Web3.toJSON(latest_blocks))
     latest_transactions = []
     for tx in latest_blocks[-1]['transactions'][-10:]:
         transaction = w3.eth.get_transaction(tx)
         latest_transactions.append(transaction)
         tx_info = Web3.toJSON(latest_transactions)
-        data.set(Web3.toJSON(tx), tx_info)
+
+    data.set('latest_transactions', tx_info)
     current_time = time.time()
     return render_template("index.html", current_eth_price=data.get('current_eth_price').decode('utf-8'),
     latest_blocks=latest_blocks,
