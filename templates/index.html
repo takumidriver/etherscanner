@@ -13,21 +13,21 @@
         <h4>latest blocks <i class="bi bi-activity"></i></h4>
         <table class="table table-sm table-striped border-top border-bottom border-3">
           {% for block in latest_blocks %}
-          <tr>
-              <td>
-                <h5>block</h5>
-                <a href="/block/{{ block.number }}">{{ block.number }}</a>
-                <p>{{ (current_time - block.timestamp) |int}} seconds ago <i class="bi bi-clock"></i></p>
-              </td>
-              <td>
-                <h5>miner</h5>
-                <a href="/address/{{ block.miner }}">{{ block.miner }}</a>
-                <p>{{ block.transactions |length}} txs</p>
-              </td>
-              <td>
-                <p>gas used: {{ block.gasUsed | numberFormat }}</p>
-              </td>
-          </tr>
+            <tr>
+                <td>
+                  <h5>block</h5>
+                  <a href="/block/{{ block.number }}">{{ block.number }}</a>
+                  <p>{{ (current_time - block.timestamp) |int}} seconds ago <i class="bi bi-clock"></i></p>
+                </td>
+                <td>
+                  <h5>miner</h5>
+                  <a href="/address/{{ block.miner }}">{{ block.miner }}</a>
+                  <p>{{ block.transactions |length}} txs</p>
+                </td>
+                <td>
+                  <p>gas used: {{ block.gasUsed | numberFormat }}</p>
+                </td>
+            </tr>
           {% endfor %}
         </table>
     </div>

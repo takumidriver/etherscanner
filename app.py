@@ -16,25 +16,43 @@ def index():
         current_eth_price = requests.get(config.url, headers=config.headers, params=config.payload).json()
         data.set('current_eth_price', Web3.toJSON(current_eth_price['USD']), ex=20)
 
-    new_blocks = data.get('latest_blocks')
+    new_blocks = data.hgetall('latest_blocks')
+
+    if new_blocks is None:
+        x = 1
+
+    #parse out information before passing to html
+    #
+    #-block number
+    #-gasUsed
+    #-etc
+    #
+    #
+    #--------------------------------------------
+
 
     latest_blocks = []
     for block_number in range(w3.eth.block_number, w3.eth.block_number-10, -1):
         block = w3.eth.get_block(block_number)
         latest_blocks.append(block)
-    data.set('latest_blocks', Web3.toJSON(latest_blocks))
+        block_string = Web3.toJSON(block)
+        data.hset(block_number, block_string, 1)
+
     latest_transactions = []
     for tx in latest_blocks[-1]['transactions'][-10:]:
         transaction = w3.eth.get_transaction(tx)
         latest_transactions.append(transaction)
         tx_info = Web3.toJSON(latest_transactions)
+        tx_string = Web3.toJSON(tx)
+        tx_string = tx_string.strip("\"")
+        data.hset('latest_transactions', tx_string, tx_info)
 
-    data.set('latest_transactions', tx_info)
     current_time = time.time()
     return render_template("index.html", current_eth_price=data.get('current_eth_price').decode('utf-8'),
-    latest_blocks=latest_blocks,
+    latest_blocks= latest_blocks,
     latest_transactions=latest_transactions,
-    current_time = current_time)
+    current_time = current_time,
+    data = data)
 
 @app.route("/address/<addr>")
 def address(addr):
@@ -67,5 +85,9 @@ def numberFormat(value):
 @app.template_filter()
 def length(content):
     return len(content)
+
+@app.template_filter()
+def decodeToUTF(content):
+    return content.decode('utf-8')
 
 #CHECK OUT REDIS FOR CACHING LAYER
