@@ -9,18 +9,15 @@ data = redis.Redis(host='127.0.0.1', port=6379, db=0)
 
 @app.route("/")
 def index():
-    print("TEST")
-    pyth_results = asyncio.run(price.get_price())
-    current_eth_price = data.get('current_eth_price')
+    pyth_results = data.get('current_btc_price')
+    if pyth_results is None:
+        pyth_results = asyncio.run(price.get_price())
+        data.set('current_btc_price', round(pyth_results['price'], 2), ex=15)
 
+    current_eth_price = data.get('current_eth_price')
     if current_eth_price is None:
         current_eth_price = requests.get(config.url, headers=config.headers, params=config.payload).json()
-        data.set('current_eth_price', Web3.toJSON(current_eth_price['USD']), ex=200)
-
-    new_blocks = data.hgetall('latest_blocks')
-
-    if new_blocks is None:
-        x = 1
+        data.set('current_eth_price', Web3.toJSON(current_eth_price['USD']), ex=15)
 
     latest_blocks = []
     latest_transactions = []
@@ -32,21 +29,17 @@ def index():
     for tx in latest_blocks[-1]['transactions'][-10:]:
         transaction = w3.eth.get_transaction(tx)
         latest_transactions.append(transaction)
-        tx_info = Web3.toJSON(latest_transactions)
+        tx_info = Web3.toJSON(transaction)
         tx_string = Web3.toJSON(tx)
         tx_string = tx_string.strip("\"")
-        data.hset(block_number, tx_string, tx_info)
-
-
-
+        data.hset('blocks', tx_string, tx_info)
 
     current_time = time.time()
     return render_template("index.html", current_eth_price=data.get('current_eth_price').decode('utf-8'),
     latest_blocks= latest_blocks,
     latest_transactions=latest_transactions,
     current_time = current_time,
-    data = data,
-    pyth_results=pyth_results)
+    data = data)
 
 @app.route("/address/<addr>")
 def address(addr):
