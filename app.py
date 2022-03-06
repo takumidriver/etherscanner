@@ -21,16 +21,6 @@ def index():
     if new_blocks is None:
         x = 1
 
-    #parse out information before passing to html
-    #
-    #-block number
-    #-gasUsed
-    #-etc
-    #
-    #
-    #--------------------------------------------
-
-
     latest_blocks = []
     for block_number in range(w3.eth.block_number, w3.eth.block_number-10, -1):
         block = w3.eth.get_block(block_number)
