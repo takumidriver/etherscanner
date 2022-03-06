@@ -9,6 +9,28 @@
       <h5>BTC : ${{data.get('current_btc_price') | decodeToUTF}}</h5>
     </div>
   </div>
+
+
+  <div class="row">
+    <div class="pt-5 mt-3 card">
+        <h4>random blocks <i class="bi bi-activity"></i></h4>
+        <table class="table table-sm table-striped border-top border-bottom border-3">
+          {% for block in data.hkeys('blocks') %}
+            <tr>
+                <td>
+                  <h5>block</h5>
+                  <a href="/block/{{ block.number }}">{{ data.hget('blocks', block) | getBlockNumber }}</a>
+                </td>
+            </tr>
+          {% endfor %}
+        </table>
+    </div>
+
+
+
+
+
+
   <div class="row">
     <div class="pt-5 mt-3 card">
         <h4>latest blocks <i class="bi bi-activity"></i></h4>

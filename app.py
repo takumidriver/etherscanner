@@ -25,6 +25,7 @@ def index():
         block = w3.eth.get_block(block_number)
         latest_blocks.append(block)
         block_string = Web3.toJSON(block)
+        data.hset('blocks', block_number, block_string)
 
     for tx in latest_blocks[-1]['transactions'][-10:]:
         transaction = w3.eth.get_transaction(tx)
@@ -32,7 +33,7 @@ def index():
         tx_info = Web3.toJSON(transaction)
         tx_string = Web3.toJSON(tx)
         tx_string = tx_string.strip("\"")
-        data.hset('blocks', tx_string, tx_info)
+        data.hset('transactions', tx_string, tx_info)
 
     current_time = time.time()
     return render_template("index.html", current_eth_price=data.get('current_eth_price').decode('utf-8'),
@@ -76,5 +77,16 @@ def length(content):
 @app.template_filter()
 def decodeToUTF(content):
     return content.decode('utf-8')
+
+@app.template_filter()
+def decodeTransaction(content):
+    block_data = json.loads(content)
+    return block_data['blockNumber']
+
+@app.template_filter()
+def getBlockNumber(content):
+    block_data = json.loads(content)
+    data.lpush('block_numbers', block_data['number'])
+    return block_data['number']
 
 #CHECK OUT REDIS FOR CACHING LAYER
