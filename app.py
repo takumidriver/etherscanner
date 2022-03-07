@@ -9,6 +9,8 @@ data = redis.Redis(host='127.0.0.1', port=6379, db=0)
 
 @app.route("/")
 def index():
+    recash = []
+    cached_blocks = []
     pyth_results = data.get('current_btc_price')
     if pyth_results is None:
         pyth_results = asyncio.run(price.get_price())
@@ -21,13 +23,13 @@ def index():
 
     latest_blocks = []
     latest_transactions = []
-    for block_number in range(w3.eth.block_number, w3.eth.block_number-10, -1):
+    for block_number in range(w3.eth.block_number, w3.eth.block_number-2, -1):
         block = w3.eth.get_block(block_number)
         latest_blocks.append(block)
         block_string = Web3.toJSON(block)
         data.hset('blocks', block_number, block_string)
 
-    for tx in latest_blocks[-1]['transactions'][-10:]:
+    for tx in latest_blocks[-1]['transactions'][-3:]:
         transaction = w3.eth.get_transaction(tx)
         latest_transactions.append(transaction)
         tx_info = Web3.toJSON(transaction)
@@ -35,12 +37,29 @@ def index():
         tx_string = tx_string.strip("\"")
         data.hset('transactions', tx_string, tx_info)
 
+
+    for block in data.hkeys('blocks'):
+        content = data.hget('blocks', block)
+        block_data = json.loads(content)
+        x = (block_data['number'], block_data)
+        cached_blocks.append(x)
+        cached_blocks.sort()
+        cached_blocks.reverse()
+        recash = []
+    [recash.append(x) for x in cached_blocks if x not in recash]
+
+    while(len(recash) > 10):
+        recash.pop((len(recash)-1))
+
+
     current_time = time.time()
-    return render_template("index.html", current_eth_price=data.get('current_eth_price').decode('utf-8'),
+    current_eth_price=data.get('current_eth_price').decode('utf-8')
+    return render_template("index.html", current_eth_price=current_eth_price,
     latest_blocks= latest_blocks,
     latest_transactions=latest_transactions,
     current_time = current_time,
-    data = data)
+    data = data,
+    cached_blocks = recash)
 
 @app.route("/address/<addr>")
 def address(addr):
@@ -86,7 +105,8 @@ def decodeTransaction(content):
 @app.template_filter()
 def getBlockNumber(content):
     block_data = json.loads(content)
-    data.lpush('block_numbers', block_data['number'])
-    return block_data['number']
+    cached_blocks.append((block_data['number'], block_data))
+    cached_blocks.sort()
+    return
 
 #CHECK OUT REDIS FOR CACHING LAYER
